@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="color-scheme" content="only light"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffffff"><title>草！躲避！</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="src/content.js"></script>
+<script defer src="src/store.js"></script>
+<script defer src="src/achievements.js"></script>
+<script defer src="src/achievements-view.js"></script>
+<script defer src="src/geometry.js"></script>
+<script defer src="src/twin-orbit.js"></script>
+<script defer src="src/engine.js"></script>
+<script defer src="src/render.js"></script>
+<script defer src="src/mode-preview.js"></script>
+<script defer src="src/audio-assets.js"></script>
+<script defer src="src/audio.js"></script>
+<script defer src="src/transition.js"></script>
+<script defer src="src/title-glyphs.js"></script>
+<script defer src="src/title.js"></script>
+<script defer src="src/orientation.js"></script>
+<script defer src="src/touch-controls.js"></script>
+<script defer src="src/home-mask.js"></script>
+<script defer src="src/result-presentation.js"></script>
+<script defer src="src/shop.js"></script>
+<script defer src="src/platform-config.js"></script>
+<script defer src="src/leaderboards.js"></script>
+<script defer src="src/rewarded-ads.js"></script>
+<script defer src="src/ranking-view.js"></script>
+<script defer src="src/app.js"></script>
+</head>
+<body data-screen="menu">
+<svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="m9 3-.6 2.3-2 .9-2.1-.6-2 3.4L4 10.7v2.6l-1.7 1.7 2 3.4 2.1-.6 2 .9L9 21h6l.6-2.3 2-.9 2.1.6 2-3.4-1.7-1.7v-2.6L21.7 9l-2-3.4-2.1.6-2-.9L15 3Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/></symbol>
+<symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4ZM15 8a6 6 0 0 1 0 8M18 4a11 11 0 0 1 0 16"/></symbol>
+<symbol id="i-power" viewBox="0 0 24 24"><path d="M12 2v10M6 5a9 9 0 1 0 12 0"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="m10 5-7 7 7 7M3 12h18"/></symbol>
+<symbol id="i-next" viewBox="0 0 24 24"><path d="m14 5 7 7-7 7M21 12H3"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 4v16M16 4v16"/></symbol>
+<symbol id="i-finger" viewBox="0 0 24 24"><path d="M9 12V4a2 2 0 0 1 4 0v7l2-1 4 2v7l-3 3h-5l-6-7a2 2 0 0 1 3-2l1 1"/></symbol>
+<symbol id="i-joystick" viewBox="0 0 24 24"><ellipse cx="12" cy="18" rx="8" ry="3"/><path d="M12 18V8M5 17l3-4h8l3 4"/><circle cx="12" cy="5" r="3"/></symbol></defs></svg>
+<main id="app">
+<canvas id="game" tabindex="0" aria-label="游戏场地，移动鼠标或使用触屏手指、摇杆引导小球，Esc 暂停"></canvas>
+<div id="touch-joystick" class="touch-joystick" hidden aria-hidden="true"><div id="joystick-thumb" class="joystick-thumb"></div></div>
+<section id="menu-overlay" class="home" aria-label="主界面">
+<div class="home-orbit orbit-one" aria-hidden="true"></div><div class="home-orbit orbit-two" aria-hidden="true"></div>
+<div class="home-title"><div class="title-disc" aria-hidden="true"></div><h1 class="wordmark" aria-label="草！躲避！"></h1><p class="title-caption">五百万以内<br><span>最草的躲避球游戏</span></p></div>
+<nav class="home-menu" aria-label="主菜单">
+<button id="start-button" class="menu-link"><span class="menu-dot"></span><span>开始游戏<small>PLAY</small></span><svg><use href="#i-next"/></svg></button>
+<button id="achievements-open" class="menu-link"><span class="menu-dot"></span><span>成就系统<small>ACHIEVEMENTS</small></span><svg><use href="#i-next"/></svg></button>
+<button id="shop-open" class="menu-link"><span class="menu-dot"></span><span>积分商城<small>COLLECTION</small></span><svg><use href="#i-next"/></svg></button>
+<button id="guide-open" class="menu-link"><span class="menu-dot"></span><span>游戏说明<small>HOW TO PLAY</small></span><svg><use href="#i-next"/></svg></button>
+</nav>
+<div class="signature">LiliAQ<span>KEEP MOVING. STAY ALIVE.</span></div>
+<button id="settings-open" class="icon-button settings-open" aria-label="设置"><svg><use href="#i-settings"/></svg></button>
+</section>
+<section id="mode-screen" class="page modes" hidden aria-label="游戏模式选择">
+<nav class="mode-sidebar" aria-label="模式导航"><button id="mode-back" class="mode-back"><svg><use href="#i-back"/></svg><span>返回</span></button>
+<div id="mode-list" class="mode-list" role="tablist" aria-label="游戏模式" aria-orientation="vertical">
+<button id="mode-tab-classic" class="mode-tab" role="tab" data-mode="classic" aria-controls="mode-panel-classic" aria-selected="true" tabindex="0"><span>经典模式</span></button>
+<button id="mode-tab-hard" class="mode-tab" role="tab" data-mode="hard" aria-controls="mode-panel-hard" aria-selected="false" tabindex="-1"><span>困难模式</span></button>
+<button id="mode-tab-monochrome" class="mode-tab" role="tab" data-mode="monochrome" aria-controls="mode-panel-monochrome" aria-selected="false" tabindex="-1"><span>黑白世界</span></button>
+<button id="mode-tab-race" class="mode-tab" role="tab" data-mode="race" aria-controls="mode-panel-race" aria-selected="false" tabindex="-1"><span>竞速模式</span></button>
+<button id="mode-tab-twin" class="mode-tab" role="tab" data-mode="twin" aria-controls="mode-panel-twin" aria-selected="false" tabindex="-1"><span>双生循环</span></button>
+<button id="mode-tab-trial" class="mode-tab" role="tab" data-mode="trial" aria-controls="mode-panel-trial" aria-selected="false" tabindex="-1"><span>无尽试炼</span></button>
+</div></nav><div id="mode-track" class="mode-track">
+<article id="mode-panel-classic" class="mode-card classic" role="tabpanel" aria-labelledby="mode-tab-classic"><div class="mode-art" aria-hidden="true"><canvas class="mode-preview" width="520" height="520" data-mode-preview="classic"></canvas></div><div class="mode-info"><h3>经典模式</h3><ul class="mode-rules"><li>不要碰到移动的东西！任何形状！</li><li>静止代表安全！</li><li>活下去......</li></ul><p class="mode-quip">“世界的起源”</p><small id="classic-best" class="mode-record">最高草！值 0</small><div class="mode-actions"><button class="secondary" data-leaderboard="classic">排行榜</button><button id="classic-start" class="primary">开始生存<svg><use href="#i-next"/></svg></button></div></div></article>
+<article id="mode-panel-hard" class="mode-card hard" role="tabpanel" aria-labelledby="mode-tab-hard" hidden><div class="mode-art" aria-hidden="true"><canvas class="mode-preview" width="520" height="520" data-mode-preview="hard"></canvas></div><div class="mode-info"><h3>困难模式</h3><ul class="mode-rules"><li>你被骗了！静止并不安全！</li><li>利用冰冻。？！</li><li>慢下来......</li></ul><p class="mode-quip">“你收集了十个护盾？草。算你牛。”</p><small id="hard-best" class="mode-record">最高草！值 0</small><div class="mode-actions"><button class="secondary" data-leaderboard="hard">排行榜</button><button id="hard-start" class="primary">挑战困难<svg><use href="#i-next"/></svg></button></div></div></article>
+<article id="mode-panel-monochrome" class="mode-card monochrome" role="tabpanel" aria-labelledby="mode-tab-monochrome" hidden><div class="mode-art" aria-hidden="true"><canvas class="mode-preview" width="520" height="520" data-mode-preview="monochrome"></canvas></div><div class="mode-info"><h3>黑白世界</h3><ul class="mode-rules"><li>经典模式！但是黑白！</li><li>。。？！</li></ul><p class="mode-quip">“使用黑白游戏机的人：这有什么区别”</p><small id="monochrome-best" class="mode-record">最高草！值 0</small><div class="mode-actions"><button class="secondary" data-leaderboard="monochrome">排行榜</button><button id="monochrome-start" class="primary">进入黑白<svg><use href="#i-next"/></svg></button></div></div></article>
+<article id="mode-panel-race" class="mode-card race" role="tabpanel" aria-labelledby="mode-tab-race" hidden><div class="mode-art" aria-hidden="true"><canvas class="mode-preview" width="520" height="520" data-mode-preview="race"></canvas><span class="race-clock">30s</span></div><div class="mode-info"><h3>竞速模式</h3><ul class="mode-rules"><li>快...</li><li>不会有人在30s前结束游戏吧、、</li></ul><p class="mode-quip">“我是来测试新音效的”</p><small id="race-best" class="mode-record">最大个数 0</small><div class="mode-actions"><button class="secondary" data-leaderboard="race">排行榜</button><button id="race-start" class="primary">开始竞速<svg><use href="#i-next"/></svg></button></div></div></article>
+<article id="mode-panel-twin" class="mode-card twin" role="tabpanel" aria-labelledby="mode-tab-twin" hidden><div class="mode-art" aria-hidden="true"><canvas class="mode-preview" width="520" height="520" data-mode-preview="twin"></canvas></div><div class="mode-info"><h3>双生循环</h3><ul class="mode-rules"><li>我的移动被限制了！</li><li>白草！球会帮忙守护另一面！</li><li>时间过得好慢。</li></ul><p class="mode-quip">“转起来还挺好看”</p><small id="twin-best" class="mode-record">最高存活时间 0&#8239;s</small><div class="mode-actions"><button class="secondary" data-leaderboard="twin">排行榜</button><button id="twin-start" class="primary">开始循环<svg><use href="#i-next"/></svg></button></div></div></article>
+<article id="mode-panel-trial" class="mode-card trial" role="tabpanel" aria-labelledby="mode-tab-trial" hidden><div class="mode-art" aria-hidden="true"><canvas class="mode-preview" width="520" height="520" data-mode-preview="trial"></canvas></div><div class="mode-info"><h3>无尽试炼</h3><ul class="mode-rules"><li>只有白草！球阻碍你了！</li><li>王德发！哪来的这么多！</li><li>我需要护盾，但我没有、、</li></ul><p class="mode-quip">“真正的试炼”</p><small id="trial-best" class="mode-record">最高存活时间 0&#8239;s</small><div class="mode-actions"><button class="secondary" data-leaderboard="trial">排行榜</button><button id="trial-start" class="primary">开始试炼<svg><use href="#i-next"/></svg></button></div></div></article>
+</div></section>
+<section id="shop-screen" class="page shop" hidden aria-label="积分商城">
+<nav class="mode-sidebar" aria-label="商城导航"><button id="shop-back" class="mode-back"><svg><use href="#i-back"/></svg><span>返回</span></button><div id="shop-list" class="mode-list" role="tablist" aria-label="商城分类" aria-orientation="vertical">
+<button id="tab-player" class="mode-tab" role="tab" aria-controls="skin-grid" aria-selected="true" data-group="player">角色皮肤</button>
+<button id="tab-hazard" class="mode-tab" role="tab" aria-controls="skin-grid" aria-selected="false" data-group="hazard" tabindex="-1">障碍主题</button>
+<button id="tab-collision" class="mode-tab" role="tab" aria-controls="skin-grid" aria-selected="false" data-group="collision" tabindex="-1">生草音效</button>
+<button id="tab-music" class="mode-tab" role="tab" aria-controls="skin-grid" aria-selected="false" data-group="music" tabindex="-1">生草音乐</button>
+</div></nav><div class="shop-main"><div class="shop-balance">积分 <strong id="shop-wallet">0</strong></div><div id="skin-grid" class="skin-grid" role="tabpanel" aria-labelledby="tab-player" tabindex="0"></div></div></section>
+<section id="achievements-screen" class="page achievements" hidden aria-label="成就系统">
+<header class="page-header"><button id="achievements-back" class="back-button"><svg><use href="#i-back"/></svg>返回</button></header>
+<div class="achievements-content">
+<ul class="achievement-grid" aria-label="成就列表"></ul></div></section>
+<div id="game-hud" class="hud" hidden><div><span id="hud-label">经典模式-草！值</span><strong id="hud-time">0</strong></div><div id="shield-stock" hidden aria-label="储存护盾 0 个"><canvas id="shield-stock-icon" width="32" height="32" aria-hidden="true"></canvas><span aria-hidden="true">×</span><strong id="shield-count">0</strong></div><div><span>积分</span><strong id="hud-coins">0</strong></div><button id="pause-button" class="icon-button" aria-label="暂停游戏"><svg><use href="#i-pause"/></svg></button></div>
+<div id="effect-strip" class="effect-strip" aria-live="off"></div>
+<section id="exit-screen" class="exit-screen" hidden><p>这一刻，暂停。</p><h2>下次再见。</h2><span>可以关闭此页面，或重新回到游戏。</span><button id="exit-back" class="primary">回到主界面</button></section>
+</main>
+<dialog id="ranking-dialog" aria-labelledby="ranking-title"><div class="ranking-inner"><header><h2 id="ranking-title">排行榜</h2><button id="ranking-close" class="icon-button" aria-label="关闭排行榜"><svg><use href="#i-close"/></svg></button></header><div class="ranking-scroll" tabindex="0" aria-label="玩家排名"><table><thead><tr><th scope="col">排名</th><th scope="col">玩家名称</th><th scope="col" id="ranking-metric">草！值</th></tr></thead><tbody id="ranking-rows"></tbody></table><p id="ranking-status" role="status" aria-live="polite"></p></div><footer><button id="ranking-login" class="secondary" hidden>登录 TapTap</button><button id="ranking-refresh" class="secondary">刷新</button></footer></div></dialog>
+<dialog id="settings-dialog" class="settings-dialog" aria-label="设置"><button id="settings-close" class="icon-button dialog-close" aria-label="关闭设置"><svg><use href="#i-close"/></svg></button><div class="setting-options"><button id="music-toggle" class="setting-toggle" aria-label="背景音乐" aria-pressed="false"><svg><use href="#i-music"/></svg><i></i></button><button id="sound-toggle" class="setting-toggle" aria-label="音效" aria-pressed="true"><svg><use href="#i-sound"/></svg><i></i></button><button id="control-toggle" class="setting-toggle" aria-label="控制方式：手指控制" hidden><svg><use id="control-icon" href="#i-finger"/></svg></button><button id="exit-button" class="setting-toggle exit-option" aria-label="退出游戏"><svg><use href="#i-power"/></svg></button></div></dialog>
+<dialog id="pause-dialog" class="run-dialog" aria-label="暂停游戏"><div class="dialog-inner pause-inner"><div class="run-actions"><button id="resume-button" class="primary">继续游戏</button><button id="pause-settings" class="secondary">设置</button><button id="end-button" class="secondary">退出本局</button></div></div></dialog>
+<dialog id="revive-dialog" class="run-dialog" aria-labelledby="revive-title"><div class="dialog-inner revive-inner"><h2 id="revive-title">再躲一次</h2><p>本局可复活一次，复活自带护盾</p><div class="run-actions"><button id="revive-watch" class="primary">看广告复活</button><button id="revive-skip" class="secondary">结束本局</button></div></div></dialog>
+<dialog id="result-dialog" class="run-dialog" aria-labelledby="result-title"><div class="dialog-inner result-inner"><h2 id="result-title"><span>草！躲避！</span></h2><div class="result-summary"><div class="result-performance"><p id="result-score-label">经典模式-草！值</p><div id="result-time" class="result-time">0</div></div><div class="receipt-total"><span>获得积分</span><strong id="result-total">0</strong></div><p id="result-save" class="result-save">余额 0 积分</p></div><div class="run-actions"><button id="again-button" class="primary">重新开始</button><button id="result-shop" class="secondary">积分商城</button><button id="result-modes" class="secondary">模式选择</button><button id="result-menu" class="secondary">主菜单</button></div></div></dialog>
+<dialog id="guide-dialog" class="guide-dialog" aria-labelledby="guide-title"><header class="page-header"><button id="guide-close" class="back-button"><svg><use href="#i-back"/></svg>返回</button></header><div class="guide-content"><div class="guide-heading"><h2 id="guide-title">生存图鉴</h2></div><h3>道具</h3><div id="guide-items" class="guide-list"></div><h3>障碍</h3><div id="guide-hazards" class="guide-list"></div></div></dialog>
+
+<dialog id="control-dialog" class="control-dialog" aria-labelledby="control-title">
+<h2 id="control-title">选择控制方式</h2>
+<div class="control-options">
+<button id="choose-finger" class="control-choice">
+<svg class="control-preview" viewBox="0 0 260 130" role="img" aria-label="手指直接引导小球示意图"><path d="M48 100 143 48" fill="none" stroke="#aaa" stroke-width="2" stroke-dasharray="5 6"/><circle cx="48" cy="100" r="9" fill="#111"/><path d="m110 64 20-9-10 19" fill="none" stroke="#777" stroke-width="2"/><circle cx="155" cy="43" r="9" fill="#111"/><path d="M151 116 137 89q-5-9 2-12t11 7l5 9V53q0-9 7-9t7 9v29q17-7 28 7l-4 27" fill="#ececec" stroke="#888" stroke-width="2" stroke-linejoin="round"/></svg>
+<strong>手指控制</strong><span>手指控制草！球</span>
+</button>
+<button id="choose-joystick" class="control-choice">
+<svg class="control-preview" viewBox="0 0 260 130" role="img" aria-label="手指拨动摇杆，小球按方向移动示意图"><circle cx="180" cy="70" r="43" fill="#c8c8c8" fill-opacity=".2"/><circle cx="195" cy="52" r="17" fill="#505050" fill-opacity=".8"/><circle cx="52" cy="88" r="9" fill="#111"/><circle cx="63" cy="74" r="2.5" fill="#111"/><path d="m76 64 27-32m-14 3 14-3-1 15" fill="none" stroke="#777" stroke-width="2"/><path d="m200 123-11-27q-4-9 2-12t10 7l3 6V64q0-9 7-9t7 9v27q14-5 23 7l-3 25" fill="#ececec" stroke="#888" stroke-width="2" stroke-linejoin="round"/></svg>
+<strong>摇杆控制</strong><span>摇杆控制草！球</span>
+</button>
+</div></dialog>
+<dialog id="orientation-dialog" aria-label="屏幕方向" aria-describedby="orientation-message">
+<svg class="phone-rotate" viewBox="0 0 120 96" aria-hidden="true"><rect x="26" y="28" width="68" height="40" rx="6"/><path d="M84 43v10M38 15a40 40 0 0 1 57 9m-1-14 2 15-15-2M82 81a40 40 0 0 1-57-9m1 14-2-15 15 2"/></svg>
+<p id="orientation-message">横屏游玩，视野更开阔。</p><div class="orientation-actions"><button id="orientation-enter" class="primary">进入横屏</button><button id="orientation-skip" class="secondary">竖屏继续</button></div>
+</dialog>
+<div id="save-warning" class="notice" role="status" hidden><span></span><button id="reset-save" hidden>重置异常存档</button></div>
+<div id="achievement-notices" class="achievement-notices" role="status" aria-live="polite"></div><div id="toast" role="status" aria-atomic="true" class="toast" hidden></div><p id="boot" role="alert">正在载入游戏…</p>
+</body></html>

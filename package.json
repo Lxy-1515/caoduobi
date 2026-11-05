@@ -1,0 +1,19 @@
+{
+  "name": "caoduobi",
+  "version": "1.0.7",
+  "private": true,
+  "description": "Canvas dodge game: learning vibe coding, Codex collaboration, testing and correction.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node build.cjs",
+    "start": "node build.cjs && node serve.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "node tools/run-browser.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

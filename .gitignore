@@ -1,0 +1,28 @@
+node_modules/
+.tools/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+src/platform-config.local.js
+# Media and generated bundles are intentionally not redistributed.
+assets/
+play.html
+src/audio-assets.js
+dist/
+# Local-only logs, screenshots, backups and private project notes.
+qa/
+docs/promo/
+docs/icon/
+HANDOFF.md
+AGENTS.md
+verification.md
+.impeccable/
+.codex/
+.agents/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
